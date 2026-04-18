@@ -15,7 +15,7 @@ export function renderSVG(pattern: Pattern, options: SVGOptions = {}): string {
     size = 100,
     foreground = '#000000',
     background = '#ffffff',
-    padding = 0.1,
+    padding = 0.15,
   } = options
 
   const { cells, gridSize } = pattern
@@ -49,7 +49,7 @@ export function renderSVGPath(pattern: Pattern, options: SVGOptions = {}): strin
     size = 100,
     foreground = '#000000',
     background = '#ffffff',
-    padding = 0.1,
+    padding = 0.15,
   } = options
 
   const { cells, gridSize } = pattern

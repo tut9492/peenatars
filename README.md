@@ -31,7 +31,7 @@ const dataUri = avvatarDataUri({ seed: '0x...' })
 | `gridSize` | `number` | `5` | Grid resolution (4-8 recommended) |
 | `foreground` | `string` | `#000000` | Foreground color |
 | `background` | `string` | `#ffffff` | Background color |
-| `padding` | `number` | `0.1` | Padding ratio (0-1) |
+| `padding` | `number` | `0.15` | Padding ratio (0-1) |
 | `symmetric` | `boolean` | `true` | Mirror pattern horizontally |
 | `optimized` | `boolean` | `false` | Use path rendering for smaller files |
 
