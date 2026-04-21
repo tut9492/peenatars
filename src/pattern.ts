@@ -41,7 +41,7 @@ export function generatePattern(options: PatternOptions): Pattern {
         case 'rings':
           // Concentric ring pattern
           const distFromCenter = Math.max(
-            Math.abs(x - Math.floor(gridSize / 2)),
+            Math.abs(effectiveX - Math.floor(gridSize / 2)),
             Math.abs(y - Math.floor(gridSize / 2))
           )
           filled = getHashBool(hash, distFromCenter + index, 0.4)
@@ -56,7 +56,7 @@ export function generatePattern(options: PatternOptions): Pattern {
 
         case 'diagonal':
           // Diagonal stripe influence
-          const diag = (x + y) % 3
+          const diag = (effectiveX + y) % 3
           filled = getHashBool(hash, index, 0.35 + diag * 0.15)
           break
 
