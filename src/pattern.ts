@@ -1,6 +1,6 @@
 import { hashSeed, getHashBool, getHashInt } from './hash'
 
-export type PatternType = 'grid' | 'rings' | 'blocks' | 'diagonal'
+export type PatternType = 'normal' | 'thick' | 'chode' | 'rocket'
 
 export interface PatternOptions {
   seed: string
@@ -13,62 +13,89 @@ export interface Pattern {
   cells: boolean[][]
   type: PatternType
   gridSize: number
+  hasFace: boolean
+  faceRow: number
+  faceCx: number
+  faceWidth: number
 }
 
 /**
- * Generate a grid-based pattern from a seed
+ * Generate a phallic pattern from a seed.
+ * Traits derived from hash: shaft length, shaft width, ball size, head size, smiley face.
  */
 export function generatePattern(options: PatternOptions): Pattern {
-  const { seed, gridSize = 5, symmetric = true } = options
+  const { seed, gridSize = 9 } = options
   const hash = hashSeed(seed)
 
-  // Determine pattern type from hash
-  const types: PatternType[] = ['grid', 'rings', 'blocks', 'diagonal']
+  const types: PatternType[] = ['normal', 'thick', 'chode', 'rocket']
   const type = types[getHashInt(hash, 0, 0, types.length - 1)]
 
-  // Generate cells based on pattern type
   const cells: boolean[][] = []
-  const halfWidth = symmetric ? Math.ceil(gridSize / 2) : gridSize
+  for (let y = 0; y < gridSize; y++) cells.push(new Array(gridSize).fill(false))
 
-  for (let y = 0; y < gridSize; y++) {
-    const row: boolean[] = []
-    for (let x = 0; x < gridSize; x++) {
-      const effectiveX = symmetric && x >= halfWidth ? gridSize - 1 - x : x
-      const index = y * halfWidth + effectiveX + 1
+  const cx = Math.floor(gridSize / 2)
 
-      let filled: boolean
-      switch (type) {
-        case 'rings':
-          // Concentric ring pattern
-          const distFromCenter = Math.max(
-            Math.abs(effectiveX - Math.floor(gridSize / 2)),
-            Math.abs(y - Math.floor(gridSize / 2))
-          )
-          filled = getHashBool(hash, distFromCenter + index, 0.4)
-          break
+  // --- Traits from hash ---
+  const headSize = getHashInt(hash, 1, 1, 3)       // head width from center: 1-3
+  const headRows = getHashInt(hash, 2, 1, 3)        // head height: 1-3 rows
+  const shaftWidth = type === 'chode'
+    ? headSize                                        // chode = same width as head
+    : getHashInt(hash, 3, 1, Math.max(1, headSize - 1)) // thinner than head
+  const shaftLength = getHashInt(hash, 4, 2, gridSize - headRows - 2) // 2 to remaining space
+  const ballSize = getHashInt(hash, 5, 0, 2)         // 0=small, 1=medium, 2=big
+  const hasFace = getHashBool(hash, 6, 0.4)          // 40% chance of smiley
 
-        case 'blocks':
-          // Larger block pattern (2x2 cells share value)
-          const blockX = Math.floor(effectiveX / 2)
-          const blockY = Math.floor(y / 2)
-          filled = getHashBool(hash, blockY * 3 + blockX + 1, 0.45)
-          break
-
-        case 'diagonal':
-          // Diagonal stripe influence
-          const diag = (effectiveX + y) % 3
-          filled = getHashBool(hash, index, 0.35 + diag * 0.15)
-          break
-
-        default:
-          // Standard grid
-          filled = getHashBool(hash, index, 0.5)
-      }
-
-      row.push(filled)
+  // --- Head (top) ---
+  for (let r = 0; r < headRows; r++) {
+    // First row slightly narrower for rounded look (unless rocket)
+    let w = headSize
+    if (type === 'rocket') {
+      // Pointed: narrows toward top
+      w = Math.max(1, headSize - (headRows - 1 - r))
+    } else if (r === 0 && headRows > 1) {
+      w = Math.max(1, headSize - 1)
     }
-    cells.push(row)
+    for (let dx = -w; dx <= w; dx++) {
+      const x = cx + dx
+      if (x >= 0 && x < gridSize) cells[r][x] = true
+    }
   }
 
-  return { cells, type, gridSize }
+  // --- Shaft ---
+  const shaftStart = headRows
+  const shaftEnd = Math.min(shaftStart + shaftLength, gridSize - 2)
+  for (let y = shaftStart; y < shaftEnd; y++) {
+    for (let dx = -shaftWidth; dx <= shaftWidth; dx++) {
+      const x = cx + dx
+      if (x >= 0 && x < gridSize) cells[y][x] = true
+    }
+  }
+
+  // --- Balls (bottom) ---
+  const ballTop = shaftEnd
+  const ballSpread = Math.max(shaftWidth + 1, 2)
+  const ballRows = ballSize === 0 ? 1 : ballSize === 1 ? 2 : Math.min(3, gridSize - ballTop)
+
+  for (let r = 0; r < ballRows; r++) {
+    const y = ballTop + r
+    if (y >= gridSize) break
+
+    // Left ball
+    for (let dx = -ballSpread; dx <= -1; dx++) {
+      const x = cx + dx
+      if (x >= 0 && x < gridSize) cells[y][x] = true
+    }
+    // Right ball
+    for (let dx = 1; dx <= ballSpread; dx++) {
+      const x = cx + dx
+      if (x >= 0 && x < gridSize) cells[y][x] = true
+    }
+    // Gap between balls
+    cells[y][cx] = false
+  }
+
+  // Find the face row (middle of head)
+  const faceRow = Math.floor(headRows / 2)
+
+  return { cells, type, gridSize, hasFace, faceRow, faceCx: cx, faceWidth: headSize }
 }

@@ -27,7 +27,7 @@ export function avvatar(options: AvvatarOptions = {}): string {
   const {
     seed = Math.random().toString(),
     size = 100,
-    gridSize = 5,
+    gridSize = 9,
     foreground = '#000000',
     background = '#ffffff',
     padding = 0.15,

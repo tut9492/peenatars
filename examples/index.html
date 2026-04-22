@@ -3,19 +3,30 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>avvatars</title>
+  <title>dicktars</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: ui-monospace, monospace;
-      background: #fff;
+      background: #0a0a0a;
+      color: #fff;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       padding: 60px 20px;
     }
-    h1 { font-size: 14px; font-weight: 400; margin-bottom: 40px; }
+    h1 {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      letter-spacing: 4px;
+    }
+    .subtitle {
+      font-size: 11px;
+      color: #666;
+      margin-bottom: 40px;
+    }
     .input-wrap {
       display: flex;
       gap: 10px;
@@ -25,87 +36,187 @@
       font-family: inherit;
       font-size: 14px;
       padding: 12px 16px;
-      border: 1px solid #000;
+      border: 1px solid #333;
+      background: #111;
+      color: #fff;
       width: 400px;
       outline: none;
     }
+    input:focus { border-color: #fff; }
     button {
       font-family: inherit;
       font-size: 14px;
       padding: 12px 24px;
-      border: 1px solid #000;
-      background: #000;
-      color: #fff;
+      border: 1px solid #fff;
+      background: #fff;
+      color: #000;
       cursor: pointer;
+      font-weight: 700;
     }
-    button:hover { background: #333; }
+    button:hover { background: #ccc; }
     #avatar {
       width: 200px;
       height: 200px;
-      border: 1px solid #eee;
+      border: 1px solid #222;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+    .traits {
+      margin-top: 16px;
+      font-size: 11px;
+      color: #666;
+      text-align: center;
+      line-height: 1.8;
+    }
+    .traits span {
+      display: inline-block;
+      padding: 2px 8px;
+      border: 1px solid #333;
+      border-radius: 4px;
+      margin: 2px;
+      color: #aaa;
     }
     .examples {
       display: flex;
-      gap: 20px;
+      gap: 16px;
       margin-top: 60px;
       flex-wrap: wrap;
       justify-content: center;
+      max-width: 700px;
     }
-    .examples svg {
+    .example {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      cursor: pointer;
+    }
+    .example svg {
       width: 80px;
       height: 80px;
-      cursor: pointer;
-      border: 1px solid #eee;
+      border: 1px solid #222;
+      border-radius: 6px;
+      transition: border-color 0.2s;
     }
-    .examples svg:hover { border-color: #000; }
+    .example:hover svg { border-color: #fff; }
+    .example .label {
+      font-size: 9px;
+      color: #444;
+    }
+    .example:hover .label { color: #fff; }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, 80px);
+      gap: 12px;
+      margin-top: 40px;
+      max-width: 700px;
+      justify-content: center;
+    }
+    .grid svg {
+      width: 80px;
+      height: 80px;
+      border: 1px solid #222;
+      border-radius: 6px;
+    }
+    .section-title {
+      font-size: 11px;
+      color: #444;
+      margin-top: 60px;
+      margin-bottom: 16px;
+      letter-spacing: 2px;
+    }
+    .randomize {
+      font-size: 12px;
+      padding: 8px 16px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #666;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .randomize:hover { border-color: #fff; color: #fff; background: transparent; }
   </style>
 </head>
 <body>
-  <h1>avvatars</h1>
+  <h1>ON-CHAIN PEENS</h1>
+  <div class="subtitle">deterministic on-chain peen avatars</div>
 
   <div class="input-wrap">
-    <input type="text" id="seed" placeholder="Enter seed (address, ENS, etc.)" value="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045">
-    <button onclick="generate()">Generate</button>
+    <input type="text" id="seed" placeholder="wallet address, ENS, or any string" value="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045">
+    <button onclick="generate()">GENERATE</button>
   </div>
 
   <div id="avatar"></div>
+  <div class="traits" id="traits"></div>
 
+  <div class="section-title">EXAMPLES</div>
   <div class="examples" id="examples"></div>
 
+  <div class="section-title">RANDOM BATCH</div>
+  <div class="grid" id="grid"></div>
+  <button class="randomize" onclick="randomBatch()">RANDOMIZE</button>
+
   <script type="module">
-    import { avvatar } from '../dist/index.mjs'
+    import { avvatar, generatePattern } from '../dist/index.mjs'
 
     window.avvatar = avvatar
+    window.generatePattern = generatePattern
 
     window.generate = function() {
       const seed = document.getElementById('seed').value || Math.random().toString()
       const svg = avvatar({ seed, size: 200 })
       document.getElementById('avatar').innerHTML = svg
+
+      // Show traits
+      const pattern = generatePattern({ seed, gridSize: 9 })
+      const traitsEl = document.getElementById('traits')
+      traitsEl.innerHTML =
+        `<span>type: ${pattern.type}</span>` +
+        `<span>face: ${pattern.hasFace ? 'yes' : 'no'}</span>`
     }
 
-    // Generate initial avatar
     generate()
 
-    // Generate example avatars
+    // Example avatars
     const examples = [
-      '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B',
-      'vitalik.eth',
-      'jack.eth',
-      '0xdeadbeef',
-      '0xcafebabe',
-      'satoshi',
+      { seed: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', label: 'vitalik' },
+      { seed: 'vitalik.eth', label: 'vitalik.eth' },
+      { seed: '0xdeadbeef', label: 'deadbeef' },
+      { seed: '0xcafebabe', label: 'cafebabe' },
+      { seed: 'satoshi', label: 'satoshi' },
+      { seed: 'breadio', label: 'breadio' },
     ]
 
     const examplesEl = document.getElementById('examples')
-    examples.forEach(seed => {
+    examples.forEach(({ seed, label }) => {
       const div = document.createElement('div')
-      div.innerHTML = avvatar({ seed, size: 80 })
+      div.className = 'example'
+      div.innerHTML = avvatar({ seed, size: 80 }) + `<div class="label">${label}</div>`
       div.onclick = () => {
         document.getElementById('seed').value = seed
         generate()
       }
       examplesEl.appendChild(div)
     })
+
+    // Random batch
+    window.randomBatch = function() {
+      const gridEl = document.getElementById('grid')
+      gridEl.innerHTML = ''
+      for (let i = 0; i < 24; i++) {
+        const seed = '0x' + Math.random().toString(16).slice(2, 42)
+        const div = document.createElement('div')
+        div.innerHTML = avvatar({ seed, size: 80 })
+        div.style.cursor = 'pointer'
+        div.onclick = () => {
+          document.getElementById('seed').value = seed
+          generate()
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
+        gridEl.appendChild(div)
+      }
+    }
+    randomBatch()
   </script>
 </body>
 </html>
