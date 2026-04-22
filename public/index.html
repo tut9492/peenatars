@@ -168,7 +168,16 @@ ${$}
     document.querySelectorAll('.color-preset').forEach(function(e) { e.classList.remove('active'); });
     window.generate();
   };
-  window.copySVG = function() { navigator.clipboard.writeText(document.getElementById('avatar').innerHTML); };
+  window.copySVG = function() {
+    var svg = document.getElementById('avatar').innerHTML;
+    var canvas = document.createElement('canvas'); canvas.width = lastSize; canvas.height = lastSize;
+    var ctx = canvas.getContext('2d'); var img = new Image();
+    img.onload = function() {
+      canvas.getContext('2d').drawImage(img, 0, 0, lastSize, lastSize);
+      canvas.toBlob(function(blob) { navigator.clipboard.write([new ClipboardItem({'image/png': blob})]); });
+    };
+    img.src = 'data:image/svg+xml;base64,' + btoa(svg);
+  };
   window.copyDataUri = function() { navigator.clipboard.writeText('data:image/svg+xml;base64,' + btoa(document.getElementById('avatar').innerHTML)); };
   window.downloadPNG = function() {
     var svg = document.getElementById('avatar').innerHTML;
