@@ -10,21 +10,21 @@ export interface SVGOptions {
 /**
  * Render a smiley face on the head (eyes + smile)
  */
-function renderFace(pattern: Pattern, cellSize: number, paddingPx: number, bgColor: string): string {
+function renderFace(pattern: Pattern, cellSize: number, offsetX: number, bgColor: string, offsetY?: number, faceRow?: number): string {
   if (!pattern.hasFace || pattern.faceWidth < 2) return ''
 
   const cx = pattern.faceCx
-  const row = pattern.faceRow
+  const row = faceRow ?? pattern.faceRow
+  const oX = offsetX
+  const oY = offsetY ?? offsetX
   const eyeSize = cellSize * 0.3
-  const eyeY = paddingPx + row * cellSize + cellSize * 0.35
+  const eyeY = oY + row * cellSize + cellSize * 0.35
 
-  // Eyes
-  const leftEyeX = paddingPx + (cx - 1) * cellSize + cellSize * 0.5
-  const rightEyeX = paddingPx + (cx + 1) * cellSize + cellSize * 0.5
+  const leftEyeX = oX + (cx - 1) * cellSize + cellSize * 0.5
+  const rightEyeX = oX + (cx + 1) * cellSize + cellSize * 0.5
 
-  // Smile (arc below eyes)
   const smileY = eyeY + cellSize * 0.5
-  const smileCx = paddingPx + cx * cellSize + cellSize * 0.5
+  const smileCx = oX + cx * cellSize + cellSize * 0.5
   const smileR = cellSize * 0.6
 
   return `<circle cx="${leftEyeX}" cy="${eyeY}" r="${eyeSize}" fill="${bgColor}"/>` +
@@ -33,7 +33,23 @@ function renderFace(pattern: Pattern, cellSize: number, paddingPx: number, bgCol
 }
 
 /**
- * Render a pattern as an SVG string
+ * Find bounding box of filled cells
+ */
+function findBounds(cells: boolean[][], gridSize: number) {
+  let minX = gridSize, maxX = 0, minY = gridSize, maxY = 0
+  for (let y = 0; y < gridSize; y++)
+    for (let x = 0; x < gridSize; x++)
+      if (cells[y][x]) {
+        if (x < minX) minX = x
+        if (x > maxX) maxX = x
+        if (y < minY) minY = y
+        if (y > maxY) maxY = y
+      }
+  return { minX, maxX, minY, maxY }
+}
+
+/**
+ * Render a pattern as an SVG string — centered in frame
  */
 export function renderSVG(pattern: Pattern, options: SVGOptions = {}): string {
   const {
@@ -46,21 +62,29 @@ export function renderSVG(pattern: Pattern, options: SVGOptions = {}): string {
   const { cells, gridSize } = pattern
   const paddingPx = size * padding
   const innerSize = size - paddingPx * 2
-  const cellSize = innerSize / gridSize
+
+  // Find bounds and center the art
+  const { minX, maxX, minY, maxY } = findBounds(cells, gridSize)
+  const artW = maxX - minX + 1
+  const artH = maxY - minY + 1
+  const maxDim = Math.max(artW, artH)
+  const cellSize = innerSize / maxDim
+  const offsetX = paddingPx + (innerSize - artW * cellSize) / 2 - minX * cellSize
+  const offsetY = paddingPx + (innerSize - artH * cellSize) / 2 - minY * cellSize
 
   let rects = ''
 
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       if (cells[y][x]) {
-        const px = paddingPx + x * cellSize
-        const py = paddingPx + y * cellSize
+        const px = offsetX + x * cellSize
+        const py = offsetY + y * cellSize
         rects += `<rect x="${px}" y="${py}" width="${cellSize}" height="${cellSize}" fill="${foreground}"/>`
       }
     }
   }
 
-  const face = renderFace(pattern, cellSize, paddingPx, background)
+  const face = renderFace(pattern, cellSize, offsetX, background, offsetY, pattern.faceRow)
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" shape-rendering="crispEdges">
 <rect width="${size}" height="${size}" fill="${background}"/>
@@ -83,21 +107,28 @@ export function renderSVGPath(pattern: Pattern, options: SVGOptions = {}): strin
   const { cells, gridSize } = pattern
   const paddingPx = size * padding
   const innerSize = size - paddingPx * 2
-  const cellSize = innerSize / gridSize
+
+  const { minX, maxX, minY, maxY } = findBounds(cells, gridSize)
+  const artW = maxX - minX + 1
+  const artH = maxY - minY + 1
+  const maxDim = Math.max(artW, artH)
+  const cellSize = innerSize / maxDim
+  const offsetX = paddingPx + (innerSize - artW * cellSize) / 2 - minX * cellSize
+  const offsetY = paddingPx + (innerSize - artH * cellSize) / 2 - minY * cellSize
 
   let path = ''
 
   for (let y = 0; y < gridSize; y++) {
     for (let x = 0; x < gridSize; x++) {
       if (cells[y][x]) {
-        const px = paddingPx + x * cellSize
-        const py = paddingPx + y * cellSize
+        const px = offsetX + x * cellSize
+        const py = offsetY + y * cellSize
         path += `M${px},${py}h${cellSize}v${cellSize}h-${cellSize}z`
       }
     }
   }
 
-  const face = renderFace(pattern, cellSize, paddingPx, background)
+  const face = renderFace(pattern, cellSize, offsetX, background, offsetY, pattern.faceRow)
 
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${size} ${size}" width="${size}" height="${size}" shape-rendering="crispEdges"><rect width="${size}" height="${size}" fill="${background}"/><path d="${path}" fill="${foreground}"/>${face}</svg>`
 }

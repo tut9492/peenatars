@@ -36,14 +36,14 @@ export function generatePattern(options: PatternOptions): Pattern {
   const cx = Math.floor(gridSize / 2)
 
   // --- Traits from hash ---
-  const headSize = getHashInt(hash, 1, 1, 3)       // head width from center: 1-3
-  const headRows = getHashInt(hash, 2, 1, 3)        // head height: 1-3 rows
+  const headSize = getHashInt(hash, 1, 2, 3)       // head width from center: 2-3 (minimum 2 for face)
+  const headRows = getHashInt(hash, 2, 2, 3)        // head height: 2-3 rows (need room for face)
   const shaftWidth = type === 'chode'
     ? headSize                                        // chode = same width as head
     : getHashInt(hash, 3, 1, Math.max(1, headSize - 1)) // thinner than head
   const shaftLength = getHashInt(hash, 4, 2, gridSize - headRows - 2) // 2 to remaining space
   const ballSize = getHashInt(hash, 5, 0, 2)         // 0=small, 1=medium, 2=big
-  const hasFace = getHashBool(hash, 6, 0.4)          // 40% chance of smiley
+  const hasFace = true                                // always has a face
 
   // --- Head (top) ---
   for (let r = 0; r < headRows; r++) {

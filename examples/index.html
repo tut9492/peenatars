@@ -3,220 +3,477 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>dicktars</title>
+  <title>On-Chain Peens</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: ui-monospace, monospace;
-      background: #0a0a0a;
-      color: #fff;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: #fafafa;
+      color: #111;
       min-height: 100vh;
+      padding: 60px 40px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    /* Header */
+    .header { margin-bottom: 40px; }
+    .header h1 {
+      font-size: 36px;
+      font-weight: 700;
+      display: inline;
+      margin-right: 12px;
+    }
+    .badge {
+      display: inline-block;
+      font-size: 12px;
+      padding: 4px 12px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      color: #666;
+      text-decoration: none;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+    .badge:hover { border-color: #999; color: #333; }
+    .header p {
+      font-size: 18px;
+      color: #666;
+      line-height: 1.6;
+      margin-top: 12px;
+      max-width: 600px;
+    }
+
+    /* Main layout */
+    .main {
+      display: flex;
+      gap: 48px;
+      align-items: flex-start;
+    }
+
+    /* Preview panel */
+    .preview {
+      flex: 0 0 420px;
+      background: #fff;
+      border: 1px solid #e5e5e5;
+      border-radius: 16px;
+      padding: 40px;
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 60px 20px;
     }
-    h1 {
-      font-size: 24px;
-      font-weight: 700;
-      margin-bottom: 8px;
-      letter-spacing: 4px;
+    .preview #avatar {
+      width: 280px;
+      height: 280px;
+      margin-bottom: 30px;
     }
-    .subtitle {
-      font-size: 11px;
-      color: #666;
-      margin-bottom: 40px;
+    .preview #avatar svg {
+      width: 100%;
+      height: 100%;
+      border-radius: 8px;
     }
-    .input-wrap {
+    .preview-actions {
       display: flex;
-      gap: 10px;
-      margin-bottom: 40px;
+      gap: 8px;
+      width: 100%;
     }
-    input {
+    .btn {
+      flex: 1;
       font-family: inherit;
-      font-size: 14px;
-      padding: 12px 16px;
-      border: 1px solid #333;
+      font-size: 13px;
+      padding: 10px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      background: #fff;
+      color: #333;
+      cursor: pointer;
+      text-align: center;
+    }
+    .btn:hover { border-color: #999; }
+    .btn-primary {
       background: #111;
       color: #fff;
-      width: 400px;
-      outline: none;
+      border-color: #111;
     }
-    input:focus { border-color: #fff; }
-    button {
-      font-family: inherit;
-      font-size: 14px;
-      padding: 12px 24px;
-      border: 1px solid #fff;
-      background: #fff;
-      color: #000;
-      cursor: pointer;
-      font-weight: 700;
-    }
-    button:hover { background: #ccc; }
-    #avatar {
-      width: 200px;
-      height: 200px;
-      border: 1px solid #222;
-      border-radius: 8px;
-      overflow: hidden;
-    }
-    .traits {
-      margin-top: 16px;
-      font-size: 11px;
-      color: #666;
-      text-align: center;
-      line-height: 1.8;
-    }
-    .traits span {
-      display: inline-block;
-      padding: 2px 8px;
-      border: 1px solid #333;
-      border-radius: 4px;
-      margin: 2px;
-      color: #aaa;
-    }
-    .examples {
-      display: flex;
-      gap: 16px;
-      margin-top: 60px;
-      flex-wrap: wrap;
-      justify-content: center;
-      max-width: 700px;
-    }
-    .example {
+    .btn-primary:hover { background: #333; }
+
+    /* Controls panel */
+    .controls {
+      flex: 1;
       display: flex;
       flex-direction: column;
-      align-items: center;
+      gap: 24px;
+    }
+    .control-group label {
+      display: block;
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 8px;
+    }
+    .control-group input[type="text"] {
+      width: 100%;
+      font-family: ui-monospace, monospace;
+      font-size: 15px;
+      padding: 12px 16px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      outline: none;
+      background: #fff;
+    }
+    .control-group input[type="text"]:focus { border-color: #111; }
+
+    /* Seed chips */
+    .seed-chips {
+      display: flex;
       gap: 6px;
-      cursor: pointer;
+      flex-wrap: wrap;
+      margin-top: 8px;
     }
-    .example svg {
-      width: 80px;
-      height: 80px;
-      border: 1px solid #222;
-      border-radius: 6px;
-      transition: border-color 0.2s;
-    }
-    .example:hover svg { border-color: #fff; }
-    .example .label {
-      font-size: 9px;
-      color: #444;
-    }
-    .example:hover .label { color: #fff; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, 80px);
-      gap: 12px;
-      margin-top: 40px;
-      max-width: 700px;
-      justify-content: center;
-    }
-    .grid svg {
-      width: 80px;
-      height: 80px;
-      border: 1px solid #222;
-      border-radius: 6px;
-    }
-    .section-title {
-      font-size: 11px;
-      color: #444;
-      margin-top: 60px;
-      margin-bottom: 16px;
-      letter-spacing: 2px;
-    }
-    .randomize {
+    .chip {
+      font-family: ui-monospace, monospace;
       font-size: 12px;
-      padding: 8px 16px;
-      border: 1px solid #333;
-      background: transparent;
+      padding: 5px 12px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      background: #fff;
       color: #666;
       cursor: pointer;
-      margin-top: 20px;
     }
-    .randomize:hover { border-color: #fff; color: #fff; background: transparent; }
+    .chip:hover { border-color: #111; color: #111; }
+
+    /* Color presets */
+    .color-presets {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 12px;
+    }
+    .color-preset {
+      font-size: 12px;
+      padding: 6px 14px;
+      border: 1px solid #ddd;
+      border-radius: 20px;
+      background: #fff;
+      cursor: pointer;
+      color: #333;
+    }
+    .color-preset:hover { border-color: #111; }
+    .color-preset.active { background: #111; color: #fff; border-color: #111; }
+
+    /* Color inputs */
+    .color-row {
+      display: flex;
+      gap: 12px;
+    }
+    .color-input {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 8px 12px;
+      background: #fff;
+    }
+    .color-swatch {
+      width: 28px;
+      height: 28px;
+      border-radius: 4px;
+      border: 1px solid #e5e5e5;
+      cursor: pointer;
+    }
+    .color-input input[type="text"] {
+      border: none;
+      font-family: ui-monospace, monospace;
+      font-size: 14px;
+      width: 80px;
+      outline: none;
+    }
+
+    /* Sliders */
+    .slider-row {
+      display: flex;
+      gap: 24px;
+    }
+    .slider-group {
+      flex: 1;
+    }
+    .slider-header {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 6px;
+    }
+    .slider-header .value { color: #111; }
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 6px;
+      border-radius: 3px;
+      background: #111;
+      outline: none;
+    }
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #111;
+      cursor: pointer;
+      border: 3px solid #fff;
+      box-shadow: 0 0 0 1px #111;
+    }
+
+    /* Traits display */
+    .traits {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: 4px;
+    }
+    .trait {
+      font-size: 11px;
+      padding: 4px 10px;
+      border: 1px solid #e5e5e5;
+      border-radius: 6px;
+      color: #888;
+      font-family: ui-monospace, monospace;
+    }
+
+    /* View toggle */
+    .view-toggle {
+      display: flex;
+      gap: 0;
+      margin-bottom: 16px;
+      width: 100%;
+    }
+    .view-tab {
+      flex: 1;
+      font-family: inherit;
+      font-size: 13px;
+      padding: 10px;
+      border: 1px solid #ddd;
+      background: #fff;
+      color: #999;
+      cursor: pointer;
+      text-align: center;
+      font-weight: 600;
+    }
+    .view-tab:first-child { border-radius: 8px 0 0 8px; }
+    .view-tab:last-child { border-radius: 0 8px 8px 0; border-left: none; }
+    .view-tab.active { background: #111; color: #fff; border-color: #111; }
+
+    /* ASCII preview */
+    #asciiPreview {
+      width: 100%;
+      font-family: ui-monospace, monospace;
+      font-size: 11px;
+      line-height: 1.15;
+      padding: 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      white-space: pre;
+      text-align: center;
+      min-height: 280px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    @media (max-width: 800px) {
+      body { padding: 30px 20px; }
+      .main { flex-direction: column; }
+      .preview { flex: none; width: 100%; }
+    }
   </style>
 </head>
 <body>
-  <h1>ON-CHAIN PEENS</h1>
-  <div class="subtitle">deterministic on-chain peen avatars</div>
-
-  <div class="input-wrap">
-    <input type="text" id="seed" placeholder="wallet address, ENS, or any string" value="0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045">
-    <button onclick="generate()">GENERATE</button>
+  <div class="header">
+    <h1>On-Chain Peens</h1>
+    <a href="https://github.com/tut9492/onchain-peens" class="badge">GitHub</a>
+    <span class="badge">v0.1.0</span>
+    <p>Peen avatars as SVGs. Generate unique peens from any seed string — Ethereum addresses, ENS names, emails, usernames. Deterministic, customizable, lightweight.</p>
   </div>
 
-  <div id="avatar"></div>
-  <div class="traits" id="traits"></div>
+  <div class="main">
+    <div class="preview">
+      <div class="view-toggle">
+        <button class="view-tab active" onclick="setView('svg',this)">SVG</button>
+        <button class="view-tab" onclick="setView('ascii',this)">ASCII</button>
+      </div>
+      <div id="avatar"></div>
+      <div id="asciiPreview" style="display:none"></div>
+      <div class="preview-actions" id="svgActions">
+        <button class="btn" onclick="copySVG()">Copy SVG</button>
+        <button class="btn" onclick="copyDataUri()">Copy Data URI</button>
+        <button class="btn btn-primary" onclick="downloadPNG()">Download PNG</button>
+      </div>
+      <div class="preview-actions" id="asciiActions" style="display:none">
+        <button class="btn" onclick="copyAscii()">Copy ASCII</button>
+      </div>
+    </div>
 
-  <div class="section-title">EXAMPLES</div>
-  <div class="examples" id="examples"></div>
+    <div class="controls">
+      <div class="control-group">
+        <label>Seed</label>
+        <input type="text" id="seed" value="visualizevalue" oninput="generate()">
+        <div class="seed-chips">
+          <span class="chip" onclick="setSeed('0x1234...abcd')">0x1234...abcd</span>
+          <span class="chip" onclick="setSeed('vitalik.eth')">vitalik.eth</span>
+          <span class="chip" onclick="setSeed('satoshi')">satoshi</span>
+          <span class="chip" onclick="setSeed('breadio')">breadio</span>
+          <span class="chip" onclick="setSeed('hello-world')">hello-world</span>
+        </div>
+      </div>
 
-  <div class="section-title">RANDOM BATCH</div>
-  <div class="grid" id="grid"></div>
-  <button class="randomize" onclick="randomBatch()">RANDOMIZE</button>
+      <div class="control-group">
+        <label>Colors</label>
+        <div class="color-presets">
+          <span class="color-preset active" onclick="setColors('#000000','#ffffff',this)">Default</span>
+          <span class="color-preset" onclick="setColors('#ffffff','#000000',this)">Inverted</span>
+          <span class="color-preset" onclick="setColors('#1a5fb4','#daeaf6',this)">Blue</span>
+          <span class="color-preset" onclick="setColors('#26a269','#daf5e7',this)">Green</span>
+          <span class="color-preset" onclick="setColors('#813d9c','#f0daf5',this)">Purple</span>
+          <span class="color-preset" onclick="setColors('#e5a50a','#fdf3d7',this)">Amber</span>
+          <span class="color-preset" onclick="setColors('#f5c6aa','#8b4513',this)">Skin</span>
+        </div>
+        <div class="color-row">
+          <div class="color-input">
+            <div class="color-swatch" id="fgSwatch" style="background:#000"></div>
+            <input type="text" id="fgColor" value="#000000" oninput="updateFromInputs()">
+          </div>
+          <div class="color-input">
+            <div class="color-swatch" id="bgSwatch" style="background:#fff"></div>
+            <input type="text" id="bgColor" value="#ffffff" oninput="updateFromInputs()">
+          </div>
+        </div>
+      </div>
+
+      <input type="hidden" id="gridSize" value="9">
+      <input type="hidden" id="size" value="200">
+      <input type="hidden" id="padding" value="15">
+
+      <div class="control-group">
+        <label>Traits</label>
+        <div class="traits" id="traits"></div>
+      </div>
+
+    </div>
+  </div>
 
   <script type="module">
-    import { avvatar, generatePattern } from '../dist/index.mjs'
+    import { avvatar, generatePattern, avvatarAscii, hashSeed } from '../dist/index.mjs'
 
     window.avvatar = avvatar
     window.generatePattern = generatePattern
+    window.avvatarAscii = avvatarAscii
+    window.hashSeed = hashSeed
+
+    let currentView = 'svg'
+
+    window.setView = function(view, el) {
+      currentView = view
+      document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'))
+      el.classList.add('active')
+
+      document.getElementById('avatar').style.display = view === 'svg' ? 'block' : 'none'
+      document.getElementById('asciiPreview').style.display = view === 'ascii' ? 'flex' : 'none'
+      document.getElementById('svgActions').style.display = view === 'svg' ? 'flex' : 'none'
+      document.getElementById('asciiActions').style.display = view === 'ascii' ? 'flex' : 'none'
+      generate()
+    }
+
+    window.copyAscii = function() {
+      const text = document.getElementById('asciiPreview').textContent
+      navigator.clipboard.writeText(text)
+    }
 
     window.generate = function() {
       const seed = document.getElementById('seed').value || Math.random().toString()
-      const svg = avvatar({ seed, size: 200 })
+      const fg = document.getElementById('fgColor').value
+      const bg = document.getElementById('bgColor').value
+      // Derive grid, size, padding from seed
+      const h = hashSeed(seed)
+      const gridSize = 7 + Math.floor(h[10] * 6) // 7-12
+      const size = 150 + Math.floor(h[11] * 150)  // 150-300
+      const padding = 0.08 + h[12] * 0.15          // 8-23%
+
+      // SVG
+      const svg = avvatar({ seed, size, gridSize, foreground: fg, background: bg, padding })
       document.getElementById('avatar').innerHTML = svg
 
-      // Show traits
-      const pattern = generatePattern({ seed, gridSize: 9 })
-      const traitsEl = document.getElementById('traits')
-      traitsEl.innerHTML =
-        `<span>type: ${pattern.type}</span>` +
-        `<span>face: ${pattern.hasFace ? 'yes' : 'no'}</span>`
+      // ASCII with matching colors
+      const ascii = avvatarAscii({ seed, gridSize })
+      const asciiEl = document.getElementById('asciiPreview')
+      asciiEl.textContent = ascii
+      asciiEl.style.color = fg
+      asciiEl.style.backgroundColor = bg
+
+      // Traits
+      const pattern = generatePattern({ seed, gridSize })
+      document.getElementById('traits').innerHTML =
+        `<span class="trait">type: ${pattern.type}</span>` +
+        `<span class="trait">face: ${pattern.hasFace ? 'yes' : 'no'}</span>` +
+        `<span class="trait">grid: ${gridSize}</span>` +
+        `<span class="trait">size: ${size}px</span>` +
+        `<span class="trait">padding: ${Math.round(padding*100)}%</span>`
+    }
+
+    window.setSeed = function(seed) {
+      document.getElementById('seed').value = seed
+      generate()
+    }
+
+    window.setColors = function(fg, bg, el) {
+      document.getElementById('fgColor').value = fg
+      document.getElementById('bgColor').value = bg
+      document.getElementById('fgSwatch').style.background = fg
+      document.getElementById('bgSwatch').style.background = bg
+      document.querySelectorAll('.color-preset').forEach(e => e.classList.remove('active'))
+      if (el) el.classList.add('active')
+      generate()
+    }
+
+    window.updateFromInputs = function() {
+      const fg = document.getElementById('fgColor').value
+      const bg = document.getElementById('bgColor').value
+      document.getElementById('fgSwatch').style.background = fg
+      document.getElementById('bgSwatch').style.background = bg
+      document.querySelectorAll('.color-preset').forEach(e => e.classList.remove('active'))
+      generate()
+    }
+
+    window.copySVG = function() {
+      const svg = document.getElementById('avatar').innerHTML
+      navigator.clipboard.writeText(svg)
+    }
+
+    window.copyDataUri = function() {
+      const svg = document.getElementById('avatar').innerHTML
+      navigator.clipboard.writeText('data:image/svg+xml;base64,' + btoa(svg))
+    }
+
+    window.downloadPNG = function() {
+      const svg = document.getElementById('avatar').innerHTML
+      const size = parseInt(document.getElementById('size').value)
+      const canvas = document.createElement('canvas')
+      canvas.width = size
+      canvas.height = size
+      const ctx = canvas.getContext('2d')
+      const img = new Image()
+      img.onload = () => {
+        ctx.drawImage(img, 0, 0)
+        const a = document.createElement('a')
+        a.download = 'peen.png'
+        a.href = canvas.toDataURL('image/png')
+        a.click()
+      }
+      img.src = 'data:image/svg+xml;base64,' + btoa(svg)
     }
 
     generate()
-
-    // Example avatars
-    const examples = [
-      { seed: '0xAb5801a7D398351b8bE11C439e05C5B3259aeC9B', label: 'vitalik' },
-      { seed: 'vitalik.eth', label: 'vitalik.eth' },
-      { seed: '0xdeadbeef', label: 'deadbeef' },
-      { seed: '0xcafebabe', label: 'cafebabe' },
-      { seed: 'satoshi', label: 'satoshi' },
-      { seed: 'breadio', label: 'breadio' },
-    ]
-
-    const examplesEl = document.getElementById('examples')
-    examples.forEach(({ seed, label }) => {
-      const div = document.createElement('div')
-      div.className = 'example'
-      div.innerHTML = avvatar({ seed, size: 80 }) + `<div class="label">${label}</div>`
-      div.onclick = () => {
-        document.getElementById('seed').value = seed
-        generate()
-      }
-      examplesEl.appendChild(div)
-    })
-
-    // Random batch
-    window.randomBatch = function() {
-      const gridEl = document.getElementById('grid')
-      gridEl.innerHTML = ''
-      for (let i = 0; i < 24; i++) {
-        const seed = '0x' + Math.random().toString(16).slice(2, 42)
-        const div = document.createElement('div')
-        div.innerHTML = avvatar({ seed, size: 80 })
-        div.style.cursor = 'pointer'
-        div.onclick = () => {
-          document.getElementById('seed').value = seed
-          generate()
-          window.scrollTo({ top: 0, behavior: 'smooth' })
-        }
-        gridEl.appendChild(div)
-      }
-    }
-    randomBatch()
   </script>
 </body>
 </html>

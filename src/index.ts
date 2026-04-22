@@ -1,5 +1,6 @@
 import { generatePattern, PatternOptions, PatternType } from './pattern'
 import { renderSVG, renderSVGPath, SVGOptions } from './svg'
+import { renderAscii, AsciiOptions } from './ascii'
 
 export interface AvvatarOptions {
   /** Seed string (e.g., Ethereum address) */
@@ -57,10 +58,25 @@ export function avvatarDataUri(options: AvvatarOptions = {}): string {
   return `data:image/svg+xml;base64,${btoa(svg)}`
 }
 
+/**
+ * Generate ASCII art peen from a seed
+ */
+export function avvatarAscii(options: AvvatarOptions = {}, asciiOptions: AsciiOptions = {}): string {
+  const {
+    seed = Math.random().toString(),
+    gridSize = 9,
+    symmetric = true,
+  } = options
+
+  const pattern = generatePattern({ seed, gridSize, symmetric })
+  return renderAscii(pattern, asciiOptions)
+}
+
 // Export types
-export type { PatternType, PatternOptions, SVGOptions }
+export type { PatternType, PatternOptions, SVGOptions, AsciiOptions }
 
 // Export sub-modules for advanced usage
 export { generatePattern } from './pattern'
 export { renderSVG, renderSVGPath } from './svg'
+export { renderAscii } from './ascii'
 export { hashSeed } from './hash'
