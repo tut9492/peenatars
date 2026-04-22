@@ -111,7 +111,7 @@
       </div>
     </div>
   </div>
-  <script type="module">
+  <script>
 function X(o){let e=[],t=3735928559,n=1103547991;for(let i=0;i<o.length;i++){let s=o.charCodeAt(i);t=Math.imul(t^s,2654435761),n=Math.imul(n^s,1597334677)}t=Math.imul(t^t>>>16,2246822507),t^=Math.imul(n^n>>>13,3266489909),n=Math.imul(n^n>>>16,2246822507),n^=Math.imul(t^t>>>13,3266489909);let r=t+n;for(let i=0;i<64;i++)r=Math.imul(r^r>>>15,1|r),r^=r+Math.imul(r^r>>>7,61|r),e.push(((r^r>>>14)>>>0)/4294967296);return e}function Z(o,e){return o[e%o.length]}function E(o,e,t,n){return Math.floor(Z(o,e)*(n-t+1))+t}function W(o){let{seed:e,gridSize:t=9}=o,n=X(e),r=["normal","thick","chode","rocket"],i=r[E(n,0,0,r.length-1)],s=[];for(let m=0;m<t;m++)s.push(new Array(t).fill(!1));let c=Math.floor(t/2),a=E(n,1,2,3),f=E(n,2,2,3),d=i==="chode"?a:E(n,3,1,Math.max(1,a-1)),$=E(n,4,2,t-f-2),P=E(n,5,0,2),O=!0;for(let m=0;m<f;m++){let x=a;i==="rocket"?x=Math.max(1,a-(f-1-m)):m===0&&f>1&&(x=Math.max(1,a-1));for(let h=-x;h<=x;h++){let g=c+h;g>=0&&g<t&&(s[m][g]=!0)}}let y=f,w=Math.min(y+$,t-2);for(let m=y;m<w;m++)for(let x=-d;x<=d;x++){let h=c+x;h>=0&&h<t&&(s[m][h]=!0)}let S=w,u=Math.max(d+1,2),A=P===0?1:P===1?2:Math.min(3,t-S);for(let m=0;m<A;m++){let x=S+m;if(x>=t)break;for(let h=-u;h<=-1;h++){let g=c+h;g>=0&&g<t&&(s[x][g]=!0)}for(let h=1;h<=u;h++){let g=c+h;g>=0&&g<t&&(s[x][g]=!0)}s[x][c]=!1}let R=Math.floor(f/2);return{cells:s,type:i,gridSize:t,hasFace:O,faceRow:R,faceCx:c,faceWidth:a}}function L(o,e,t,n,r,i){if(!o.hasFace||o.faceWidth<2)return"";let s=o.faceCx,c=i??o.faceRow,a=t,f=r??t,d=e*.3,$=f+c*e+e*.35,P=a+(s-1)*e+e*.5,O=a+(s+1)*e+e*.5,y=$+e*.5,w=a+s*e+e*.5,S=e*.6;return`<circle cx="${P}" cy="${$}" r="${d}" fill="${n}"/><circle cx="${O}" cy="${$}" r="${d}" fill="${n}"/><path d="M${w-S},${y} Q${w},${y+S*.8} ${w+S},${y}" stroke="${n}" stroke-width="${d*.7}" fill="none" stroke-linecap="round"/>`}function _(o,e){let t=e,n=0,r=e,i=0;for(let s=0;s<e;s++)for(let c=0;c<e;c++)o[s][c]&&(c<t&&(t=c),c>n&&(n=c),s<r&&(r=s),s>i&&(i=s));return{minX:t,maxX:n,minY:r,maxY:i}}function F(o,e={}){let{size:t=100,foreground:n="#000000",background:r="#ffffff",padding:i=.15}=e,{cells:s,gridSize:c}=o,a=t*i,f=t-a*2,{minX:d,maxX:$,minY:P,maxY:O}=_(s,c),y=$-d+1,w=O-P+1,S=Math.max(y,w),u=f/S,A=a+(f-y*u)/2-d*u,R=a+(f-w*u)/2-P*u,m="";for(let h=0;h<c;h++)for(let g=0;g<c;g++)if(s[h][g]){let k=A+g*u,V=R+h*u;m+=`<rect x="${k}" y="${V}" width="${u}" height="${u}" fill="${n}"/>`}let x=L(o,u,A,r,R,o.faceRow);return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${t} ${t}" width="${t}" height="${t}" shape-rendering="crispEdges">
 <rect width="${t}" height="${t}" fill="${r}"/>
 ${m}
@@ -119,102 +119,106 @@ ${x}
 </svg>`}function C(o,e={}){let{size:t=100,foreground:n="#000000",background:r="#ffffff",padding:i=.15}=e,{cells:s,gridSize:c}=o,a=t*i,f=t-a*2,{minX:d,maxX:$,minY:P,maxY:O}=_(s,c),y=$-d+1,w=O-P+1,S=Math.max(y,w),u=f/S,A=a+(f-y*u)/2-d*u,R=a+(f-w*u)/2-P*u,m="";for(let h=0;h<c;h++)for(let g=0;g<c;g++)if(s[h][g]){let k=A+g*u,V=R+h*u;m+=`M${k},${V}h${u}v${u}h-${u}z`}let x=L(o,u,A,r,R,o.faceRow);return`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${t} ${t}" width="${t}" height="${t}" shape-rendering="crispEdges"><rect width="${t}" height="${t}" fill="${r}"/><path d="${m}" fill="${n}"/>${x}</svg>`}var j="$@B%8&WM#*oahkbdpqwmZO0QLCJUYXzcvunxrjft/\\|()1{}[]?-_+~<>i!lI;:,\"^`'.".split(""),Q=o=>j[o%12],T=o=>j[12+o%16];var K=[["(",")"],["{","}"],["[","]"],["/","\\"],["(",")"],["<",">"],["|","|"],["!","!"],["(",")"],["{","}"]],N=["o","O","0","*","@","8","#","Q","B","%","W","&","b","d","q","p"],tt=["~","-","_","v","w","u","o","c","J","U","n","z","^"],nt=["@","B","8","%","&","W","M","#","Q","O","0","o","a","*"],et=["^","*","o","Y","T","A","V","W","M","#"],ot=["-","=","~","_","+","-","~","="],U=["|","!","|",":",";","!","|",":"];function I(o,e={}){let{cells:t,gridSize:n,hasFace:r,faceRow:i,faceCx:s,faceWidth:c}=o,a=0;for(let l=0;l<n;l++)for(let p=0;p<n;p++)t[l][p]&&(a=a*31+l*n+p>>>0);let f=(l,p)=>l[(a+p)%l.length],d=Q(a),$=Q(a+3),[P,O]=f(K,0),y=f(U,1),w=T(a+1),S=T(a+5),u=T(a+9),A=f(nt,2),R=f(et,3),m=f(N,4),x=f(tt,5),h=f(ot,6),g=f(U,7),k=rt(t,n),V=st(t,n,s),Y=5,z=[];for(let l=0;l<n;l++){let p="",G=l<=k,D=l>=V,J=!G&&!D;for(let b=0;b<n;b++){if(!t[l][b]){p+=" ".repeat(Y);continue}if(r&&c>=2&&l===i){if(b===s-1){p+="  "+m+"  ";continue}if(b===s+1){p+="  "+m+"  ";continue}if(b===s){p+="  "+x+"  ";continue}}if(l===0&&G&&t[l].filter(Boolean).length<=1){p+="  "+R+"  ";continue}if(G){let B=(b===0||!t[l][b-1])&&t[l][b],H=t[l][b]&&(b+1>=n||!t[l][b+1]);if(B&&!H){p+=P+d+$+d+$;continue}if(H&&!B){p+=$+d+$+d+O;continue}p+=d+$+d+$+d;continue}if(J){let B=b===0||!t[l][b-1],H=b+1>=n||!t[l][b+1],M=[w,S,u],v=(l+b)%3;if(B){p+=y+M[v]+M[(v+1)%3]+M[(v+2)%3]+M[v];continue}if(H){p+=M[v]+M[(v+1)%3]+M[(v+2)%3]+M[v]+y;continue}p+=M[v]+M[(v+1)%3]+M[(v+2)%3]+M[v]+M[(v+1)%3];continue}if(D){if(b===s){p+=" ".repeat(Y);continue}p+=A.repeat(Y);continue}p+=w.repeat(Y)}z.push(p)}let q=Math.max(...z.map(l=>l.length));return z.map(l=>{let p=Math.max(0,Math.floor((q-l.length)/2));return" ".repeat(p)+l}).join(`
 `)}function rt(o,e){let t=0;for(let n=0;n<e;n++){let r=0;for(let i=0;i<e;i++)o[n][i]&&r++;if(n>0&&r<t&&r>0)return n-1;t=r}return 0}function st(o,e,t){for(let n=e-1;n>=0;n--)if(!o[n][t]&&o[n].some(Boolean))return n;return e}function it(o={}){let{seed:e=Math.random().toString(),size:t=100,gridSize:n=9,foreground:r="#000000",background:i="#ffffff",padding:s=.15,symmetric:c=!0,optimized:a=!1}=o,f=W({seed:e,gridSize:n,symmetric:c}),d={size:t,foreground:r,background:i,padding:s};return a?C(f,d):F(f,d)}function wt(o={}){let e=it(o);return`data:image/svg+xml;base64,${btoa(e)}`}function Mt(o={},e={}){let{seed:t=Math.random().toString(),gridSize:n=9,symmetric:r=!0}=o,i=W({seed:t,gridSize:n,symmetric:r});return I(i,e)}export{it as avvatar,Mt as avvatarAscii,wt as avvatarDataUri,W as generatePattern,X as hashSeed,I as renderAscii,F as renderSVG,C as renderSVGPath};
 
-    let currentView = 'svg'
-    let lastSize = 200
+    // Make functions global
+    var _avvatar = it, _generatePattern = W, _avvatarAscii = Mt, _hashSeed = X;
 
-    window.setView = function(view, el) {
-      currentView = view
-      document.querySelectorAll('.view-tab').forEach(t => t.classList.remove('active'))
-      el.classList.add('active')
-      document.getElementById('avatar').style.display = view === 'svg' ? 'block' : 'none'
-      document.getElementById('asciiPreview').style.display = view === 'ascii' ? 'flex' : 'none'
-      document.getElementById('svgActions').style.display = view === 'svg' ? 'flex' : 'none'
-      document.getElementById('asciiActions').style.display = view === 'ascii' ? 'flex' : 'none'
-      generate()
+    var lastSize = 200;
+    var currentView = 'svg';
+
+    function setView(view, el) {
+      currentView = view;
+      document.querySelectorAll('.view-tab').forEach(function(t) { t.classList.remove('active'); });
+      el.classList.add('active');
+      document.getElementById('avatar').style.display = view === 'svg' ? 'block' : 'none';
+      document.getElementById('asciiPreview').style.display = view === 'ascii' ? 'flex' : 'none';
+      document.getElementById('svgActions').style.display = view === 'svg' ? 'flex' : 'none';
+      document.getElementById('asciiActions').style.display = view === 'ascii' ? 'flex' : 'none';
+      generate();
     }
 
-    window.copyAscii = function() {
-      navigator.clipboard.writeText(document.getElementById('asciiPreview').textContent)
+    function copyAscii() {
+      navigator.clipboard.writeText(document.getElementById('asciiPreview').textContent);
+      alert('ASCII copied!');
     }
 
-    window.generate = function() {
-      const seed = document.getElementById('seed').value || Math.random().toString()
-      const fg = document.getElementById('fgColor').value
-      const bg = document.getElementById('bgColor').value
-      const h = hashSeed(seed)
-      const gridSize = 7 + Math.floor(h[10] * 6)
-      const size = 150 + Math.floor(h[11] * 150)
-      const padding = 0.08 + h[12] * 0.15
-      lastSize = size
+    function generate() {
+      var seed = document.getElementById('seed').value || Math.random().toString();
+      var fg = document.getElementById('fgColor').value;
+      var bg = document.getElementById('bgColor').value;
+      var h = _hashSeed(seed);
+      var gridSize = 7 + Math.floor(h[10] * 6);
+      var size = 150 + Math.floor(h[11] * 150);
+      var padding = 0.08 + h[12] * 0.15;
+      lastSize = size;
 
-      const svg = avvatar({ seed, size, gridSize, foreground: fg, background: bg, padding })
-      document.getElementById('avatar').innerHTML = svg
+      var svg = _avvatar({ seed: seed, size: size, gridSize: gridSize, foreground: fg, background: bg, padding: padding });
+      document.getElementById('avatar').innerHTML = svg;
 
-      const ascii = avvatarAscii({ seed, gridSize })
-      const asciiEl = document.getElementById('asciiPreview')
-      asciiEl.textContent = ascii
-      asciiEl.style.color = fg
-      asciiEl.style.backgroundColor = bg
+      var ascii = _avvatarAscii({ seed: seed, gridSize: gridSize });
+      var asciiEl = document.getElementById('asciiPreview');
+      asciiEl.textContent = ascii;
+      asciiEl.style.color = fg;
+      asciiEl.style.backgroundColor = bg;
 
-      const pattern = generatePattern({ seed, gridSize })
+      var pattern = _generatePattern({ seed: seed, gridSize: gridSize });
       document.getElementById('traits').innerHTML =
-        `<span class="trait">type: ${pattern.type}</span>` +
-        `<span class="trait">face: ${pattern.hasFace ? 'yes' : 'no'}</span>` +
-        `<span class="trait">grid: ${gridSize}</span>` +
-        `<span class="trait">size: ${size}px</span>` +
-        `<span class="trait">padding: ${Math.round(padding*100)}%</span>`
+        '<span class="trait">type: ' + pattern.type + '</span>' +
+        '<span class="trait">face: ' + (pattern.hasFace ? 'yes' : 'no') + '</span>' +
+        '<span class="trait">grid: ' + gridSize + '</span>' +
+        '<span class="trait">size: ' + size + 'px</span>' +
+        '<span class="trait">padding: ' + Math.round(padding*100) + '%</span>';
     }
 
-    window.setSeed = function(seed) {
-      document.getElementById('seed').value = seed
-      generate()
+    function setSeed(seed) {
+      document.getElementById('seed').value = seed;
+      generate();
     }
 
-    window.setColors = function(fg, bg, el) {
-      document.getElementById('fgColor').value = fg
-      document.getElementById('bgColor').value = bg
-      document.getElementById('fgSwatch').style.background = fg
-      document.getElementById('bgSwatch').style.background = bg
-      document.querySelectorAll('.color-preset').forEach(e => e.classList.remove('active'))
-      if (el) el.classList.add('active')
-      generate()
+    function setColors(fg, bg, el) {
+      document.getElementById('fgColor').value = fg;
+      document.getElementById('bgColor').value = bg;
+      document.getElementById('fgSwatch').style.background = fg;
+      document.getElementById('bgSwatch').style.background = bg;
+      document.querySelectorAll('.color-preset').forEach(function(e) { e.classList.remove('active'); });
+      if (el) el.classList.add('active');
+      generate();
     }
 
-    window.updateFromInputs = function() {
-      document.getElementById('fgSwatch').style.background = document.getElementById('fgColor').value
-      document.getElementById('bgSwatch').style.background = document.getElementById('bgColor').value
-      document.querySelectorAll('.color-preset').forEach(e => e.classList.remove('active'))
-      generate()
+    function updateFromInputs() {
+      document.getElementById('fgSwatch').style.background = document.getElementById('fgColor').value;
+      document.getElementById('bgSwatch').style.background = document.getElementById('bgColor').value;
+      document.querySelectorAll('.color-preset').forEach(function(e) { e.classList.remove('active'); });
+      generate();
     }
 
-    window.copySVG = function() {
-      navigator.clipboard.writeText(document.getElementById('avatar').innerHTML)
-      alert('SVG copied!')
+    function copySVG() {
+      navigator.clipboard.writeText(document.getElementById('avatar').innerHTML);
+      alert('SVG copied!');
     }
 
-    window.copyDataUri = function() {
-      navigator.clipboard.writeText('data:image/svg+xml;base64,' + btoa(document.getElementById('avatar').innerHTML))
-      alert('Data URI copied!')
+    function copyDataUri() {
+      navigator.clipboard.writeText('data:image/svg+xml;base64,' + btoa(document.getElementById('avatar').innerHTML));
+      alert('Data URI copied!');
     }
 
-    window.downloadPNG = function() {
-      const svg = document.getElementById('avatar').innerHTML
-      const canvas = document.createElement('canvas')
-      canvas.width = lastSize
-      canvas.height = lastSize
-      const ctx = canvas.getContext('2d')
-      const img = new Image()
-      img.onload = () => {
-        ctx.drawImage(img, 0, 0, lastSize, lastSize)
-        const a = document.createElement('a')
-        a.download = 'peen.png'
-        a.href = canvas.toDataURL('image/png')
-        a.click()
-      }
-      img.src = 'data:image/svg+xml;base64,' + btoa(svg)
+    function downloadPNG() {
+      var svg = document.getElementById('avatar').innerHTML;
+      var canvas = document.createElement('canvas');
+      canvas.width = lastSize;
+      canvas.height = lastSize;
+      var ctx = canvas.getContext('2d');
+      var img = new Image();
+      img.onload = function() {
+        ctx.drawImage(img, 0, 0, lastSize, lastSize);
+        var a = document.createElement('a');
+        a.download = 'peen.png';
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+      };
+      img.src = 'data:image/svg+xml;base64,' + btoa(svg);
     }
 
-    generate()
+    generate();
   </script>
 </body>
 </html>
