@@ -7,6 +7,12 @@ export interface SVGOptions {
   padding?: number
 }
 
+function sanitizeColor(c: string): string {
+  if (/^#[0-9A-Fa-f]{3,8}$/.test(c)) return c
+  if (/^(rgb|hsl)a?\([^)]+\)$/.test(c)) return c
+  return '#000000'
+}
+
 /**
  * Render a smiley face on the head (eyes + smile)
  */
@@ -54,10 +60,12 @@ function findBounds(cells: boolean[][], gridSize: number) {
 export function renderSVG(pattern: Pattern, options: SVGOptions = {}): string {
   const {
     size = 100,
-    foreground = '#000000',
-    background = '#ffffff',
+    foreground: rawFg = '#000000',
+    background: rawBg = '#ffffff',
     padding = 0.15,
   } = options
+  const foreground = sanitizeColor(rawFg)
+  const background = sanitizeColor(rawBg)
 
   const { cells, gridSize } = pattern
   const paddingPx = size * padding
@@ -99,10 +107,12 @@ ${face}
 export function renderSVGPath(pattern: Pattern, options: SVGOptions = {}): string {
   const {
     size = 100,
-    foreground = '#000000',
-    background = '#ffffff',
+    foreground: rawFg = '#000000',
+    background: rawBg = '#ffffff',
     padding = 0.15,
   } = options
+  const foreground = sanitizeColor(rawFg)
+  const background = sanitizeColor(rawBg)
 
   const { cells, gridSize } = pattern
   const paddingPx = size * padding
